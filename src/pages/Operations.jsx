@@ -2,11 +2,14 @@ import { useState } from 'react';
 import AdminLayout from '../layouts/AdminLayout';
 import ToastContainer from '../components/ToastContainer';
 import { useToast, useColdChainSim } from '../hooks/useAppHooks';
+import { useAppContext } from '../context/AppContext';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { coldChainUnits, stockItems } from '../data/mockData';
+import Counter from '../components/ui/Counter';
 
 const Operations = () => {
   const { toasts, showToast } = useToast();
+  const { creditWallet } = useAppContext();
   const [alertDismissed, setAlertDismissed] = useState(false);
   const [scheduledUnit, setScheduledUnit] = useState(null);
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -26,12 +29,18 @@ const Operations = () => {
   };
 
   const handleQC = (id, grade) => {
+    setInboundQueue(prev => prev.filter(item => item.id !== id));
+    
     if (grade === 'Reject') {
-      showToast({ message: `Penerimaan ${id} ditolak. Barang dikembalikan ke prosumer.`, type: 'error' });
+      showToast({ message: `Barang ${id} ditolak QC. Retur ke prosumer diproses.`, type: 'error' });
     } else {
-      showToast({ message: `Penerimaan ${id} disetujui (Grade ${grade}). Dana dicairkan ke prosumer.`, type: 'success' });
+      // Base amount calculation (simulation)
+      const baseAmount = 4500000;
+      const amount = grade === 'A' ? baseAmount : grade === 'B' ? baseAmount * 0.85 : baseAmount * 0.7;
+      
+      creditWallet(amount, `Pencairan Otomatis (Grade ${grade}) - Batch ${id}`);
+      showToast({ message: `Barang ${id} lolos QC Grade ${grade}. Dana langsung dicairkan ke prosumer.`, type: 'success' });
     }
-    setInboundQueue(prev => prev.filter(q => q.id !== id));
   };
 
   return (
@@ -133,9 +142,17 @@ const Operations = () => {
                             </div>
                           </div>
 
-                          <div className="mb-3">
-                            <span className="font-display text-4xl font-extrabold text-white tracking-tighter">{item.amount}</span>
-                            <span className="text-sm text-gray-400 ml-1 font-medium">{item.unit}</span>
+                          <div className="mb-3 flex items-end gap-1.5">
+                            <Counter
+                              value={parseFloat(item.amount)}
+                              fontSize={36}
+                              gap={2}
+                              horizontalPadding={0}
+                              textColor="white"
+                              fontWeight={800}
+                              gradientFrom="transparent"
+                            />
+                            <span className="text-sm text-gray-400 ml-1 font-medium mb-1">{item.unit}</span>
                           </div>
 
                           <div className="progress-track mb-3">
@@ -205,8 +222,18 @@ const Operations = () => {
                               </div>
                             </td>
                             <td className="py-4 px-5">
-                              <span className={`text-sm font-bold ${unit.status === 'warning' ? 'text-red-400' : 'text-blue-400'}`}>
-                                {unit.temp.toFixed(1)}°C
+                              <span className={`text-sm font-bold ${unit.status === 'warning' ? 'text-red-400' : 'text-blue-400'} flex items-center gap-0.5`}>
+                                {unit.temp < 0 && <span>−</span>}
+                                <Counter
+                                  value={parseFloat(Math.abs(unit.temp).toFixed(1))}
+                                  fontSize={14}
+                                  gap={1}
+                                  horizontalPadding={0}
+                                  textColor={unit.status === 'warning' ? '#f87171' : '#60a5fa'}
+                                  fontWeight={700}
+                                  gradientFrom="transparent"
+                                />
+                                <span>°C</span>
                               </span>
                             </td>
                             <td className="py-4 px-5">

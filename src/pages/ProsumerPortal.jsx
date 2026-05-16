@@ -1,8 +1,9 @@
 import { useState, useRef } from 'react';
 import ToastContainer from '../components/ToastContainer';
 import { useToast } from '../hooks/useAppHooks';
+import { useAppContext } from '../context/AppContext';
 import { Card, CardContent } from "@/components/ui/card";
-import { prosumerWallet } from '../data/mockData';
+import Counter from '../components/ui/Counter';
 
 const COMMODITIES = [
   { emoji: '🌾', label: 'Beras',  unit: 'kg', pricePerKg: 12000 },
@@ -15,6 +16,7 @@ const fmt = (n) => `Rp ${n.toLocaleString('id-ID')}`;
 
 const ProsumerPortal = () => {
   const { toasts, showToast } = useToast();
+  const { prosumerWallet, creditWallet } = useAppContext();
   // Onboarding State
   const [isOnboarded, setIsOnboarded] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(1);
@@ -22,8 +24,6 @@ const ProsumerPortal = () => {
 
   // Dashboard State
   const [activeTab, setActiveTab] = useState('home');
-  const [balance, setBalance] = useState(prosumerWallet.balance);
-  const [transactions, setTransactions] = useState(prosumerWallet.transactions);
   const [selectedCommodity, setSelectedCommodity] = useState(null);
   const [qty, setQty] = useState('');
   const [isRecording, setIsRecording] = useState(false);
@@ -67,8 +67,7 @@ const ProsumerPortal = () => {
       setPendingSubmissions(prev => [...prev, { id: Date.now(), commodity: selectedCommodity.label, qty: Number(qty), unit: selectedCommodity.unit, value: totalValue, time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) }]);
       showToast({ message: `${qty} ${selectedCommodity.unit} ${selectedCommodity.label} disimpan lokal.`, type: 'info', duration: 4000 });
     } else {
-      setBalance(b => b + totalValue);
-      setTransactions(prev => [{ id: `TXN-${Date.now()}`, label: `Setor ${qty}${selectedCommodity.unit} ${selectedCommodity.label}`, date: 'Hari ini', type: 'income', amount: totalValue }, ...prev]);
+      creditWallet(totalValue, `Setor ${qty}${selectedCommodity.unit} ${selectedCommodity.label}`);
       showToast({ message: `${qty} ${selectedCommodity.unit} ${selectedCommodity.label} berhasil disetor!`, type: 'success' });
     }
     setSelectedCommodity(null); setQty('');
@@ -295,7 +294,18 @@ const ProsumerPortal = () => {
                     <span className="material-symbols-outlined text-green-400 text-xl">account_balance_wallet</span>
                     <h2 className="text-xs text-gray-400 font-bold uppercase tracking-widest">Dompet Koperasi Anda</h2>
                   </div>
-                  <div className="font-display text-3xl font-extrabold text-white tracking-tight mb-5">{fmt(balance)}</div>
+                  <div className="flex items-baseline gap-1 mb-5">
+                    <span className="text-sm text-gray-400 font-medium">Rp</span>
+                    <Counter
+                      value={prosumerWallet.balance}
+                      fontSize={28}
+                      gap={2}
+                      horizontalPadding={0}
+                      textColor="white"
+                      fontWeight={800}
+                      gradientFrom="transparent"
+                    />
+                  </div>
                   <div className="flex gap-3">
                     <button onClick={() => { setActiveTab('wallet'); showToast({ message: 'Proses penarikan dimulai.', type: 'info' }); }}
                       className="btn-primary flex-1 justify-center">
@@ -369,14 +379,25 @@ const ProsumerPortal = () => {
                     <span className="material-symbols-outlined text-green-400 text-xl">account_balance_wallet</span>
                     <h2 className="text-xs text-gray-400 font-bold uppercase tracking-widest">Total Saldo Aktif</h2>
                   </div>
-                  <div className="font-display text-3xl font-extrabold text-white tracking-tight">{fmt(balance)}</div>
+                  <div className="flex items-baseline gap-1 mt-1 mb-4">
+                    <span className="text-xl font-bold text-white">Rp</span>
+                    <Counter
+                      value={prosumerWallet.balance}
+                      fontSize={36}
+                      gap={2}
+                      horizontalPadding={0}
+                      textColor="white"
+                      fontWeight={800}
+                      gradientFrom="transparent"
+                    />
+                  </div>
                 </CardContent>
               </Card>
               
               {/* Transaction History */}
               <section className="flex flex-col gap-3 animate-fade-up" style={{ animationDelay: '0.1s' }}>
                 <h2 className="font-display text-lg font-bold text-white px-1">Riwayat Transaksi</h2>
-                {transactions.map(txn => (
+                {prosumerWallet.transactions.map(txn => (
                   <Card key={txn.id}>
                     <CardContent className="p-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">

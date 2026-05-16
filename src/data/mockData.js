@@ -90,11 +90,51 @@ export const contractQueue = [
 
 // --- Prosumer Map Data ---
 export const prosumerLocations = [
-  { id: 1, name: 'Kelompok Tani Subur', lat: -7.312, lng: 112.654, commodity: '🌾 Beras', qty: '2.5 Ton', status: 'ready' },
-  { id: 2, name: 'Peternak Sejahtera', lat: -7.214, lng: 112.782, commodity: '🐓 Ayam', qty: '0.8 Ton', status: 'ready' },
-  { id: 3, name: 'Nelayan Berkah', lat: -7.195, lng: 112.748, commodity: '🐟 Ikan', qty: '0.5 Ton', status: 'transit' },
-  { id: 4, name: 'Koptan Makmur', lat: -7.385, lng: 112.610, commodity: '🌾 Beras', qty: '2 Ton', status: 'contracted' },
-  { id: 5, name: 'Tani Mandiri', lat: -7.288, lng: 112.705, commodity: '🌽 Sayur', qty: '300 Kg', status: 'ready' },
+  {
+    id: 1, name: 'Kelompok Tani Subur', lat: -7.312, lng: 112.654,
+    commodity: '🌾 Beras', qty: '2.5 Ton', status: 'ready',
+    type: 'Petani', location: 'Krian, Sidoarjo',
+    contact: '+62 812-3456-7890', nib: 'NIB-0042-SBY',
+    grade: 'Grade A', rating: 4.8, totalSetor: '18.5 Ton',
+    totalPencairan: 'Rp 12.400.000', lastTransaction: '14 Mei 2026',
+    certifications: ['HACCP', 'SNI'],
+  },
+  {
+    id: 2, name: 'Peternak Sejahtera', lat: -7.214, lng: 112.782,
+    commodity: '🐓 Ayam', qty: '0.8 Ton', status: 'ready',
+    type: 'Peternak', location: 'Tandes, Surabaya',
+    contact: '+62 813-9876-5432', nib: 'NIB-0089-SBY',
+    grade: 'Grade A', rating: 4.6, totalSetor: '9.2 Ton',
+    totalPencairan: 'Rp 8.750.000', lastTransaction: '15 Mei 2026',
+    certifications: ['Halal MUI', 'HACCP'],
+  },
+  {
+    id: 3, name: 'Nelayan Berkah', lat: -7.195, lng: 112.748,
+    commodity: '🐟 Ikan', qty: '0.5 Ton', status: 'transit',
+    type: 'Nelayan', location: 'Kenjeran, Surabaya',
+    contact: '+62 857-1122-3344', nib: 'NIB-0117-KNJ',
+    grade: 'Grade B', rating: 4.2, totalSetor: '5.8 Ton',
+    totalPencairan: 'Rp 5.200.000', lastTransaction: '13 Mei 2026',
+    certifications: ['SNI Perikanan'],
+  },
+  {
+    id: 4, name: 'Koptan Makmur', lat: -7.385, lng: 112.610,
+    commodity: '🌾 Beras', qty: '2 Ton', status: 'contracted',
+    type: 'Koperasi Tani', location: 'Gresik',
+    contact: '+62 821-5566-7788', nib: 'NIB-0023-GRK',
+    grade: 'Grade A', rating: 4.9, totalSetor: '32.0 Ton',
+    totalPencairan: 'Rp 28.500.000', lastTransaction: '16 Mei 2026',
+    certifications: ['HACCP', 'SNI', 'ISO 22000'],
+  },
+  {
+    id: 5, name: 'Tani Mandiri', lat: -7.288, lng: 112.705,
+    commodity: '🌽 Sayur', qty: '300 Kg', status: 'ready',
+    type: 'Petani', location: 'Mojokerto',
+    contact: '+62 878-4433-2211', nib: 'NIB-0055-MJK',
+    grade: 'Grade B', rating: 4.0, totalSetor: '3.2 Ton',
+    totalPencairan: 'Rp 1.800.000', lastTransaction: '12 Mei 2026',
+    certifications: ['GAP'],
+  },
 ];
 
 // --- SDG Impact ---

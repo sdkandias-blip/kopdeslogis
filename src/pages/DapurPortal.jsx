@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import ToastContainer from '../components/ToastContainer';
 import { useToast } from '../hooks/useAppHooks';
+import { useAppContext } from '../context/AppContext';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import GooeyNav from '../components/ui/GooeyNav';
 
 const DapurPortal = () => {
   const { toasts, showToast } = useToast();
+  const { poList, addPO } = useAppContext();
   const [activeTab, setActiveTab] = useState('order');
   const [poForm, setPoForm] = useState({ beras: '', ayam: '', sayur: '' });
-  const [poHistory, setPoHistory] = useState([
-    { id: 'PO-DPR-01', date: '15 Mei 2026', items: '2 Ton Beras, 500 Kg Ayam', status: 'approved' },
-  ]);
 
   const handleSubmitPO = (e) => {
     e.preventDefault();
@@ -24,13 +24,14 @@ const DapurPortal = () => {
     if (poForm.sayur) items.push(`${poForm.sayur} Kg Sayur`);
 
     const newPO = {
-      id: `PO-DPR-0${poHistory.length + 2}`,
+      id: `PO-DPR-0${poList.length + 1}`,
+      dapur: 'Dapur Umum Rungkut (Anda)',
       date: 'Hari ini',
       items: items.join(', '),
       status: 'pending'
     };
 
-    setPoHistory([newPO, ...poHistory]);
+    addPO(newPO);
     setPoForm({ beras: '', ayam: '', sayur: '' });
     showToast({ message: 'Purchase Order berhasil dikirim ke Koperasi!', type: 'success' });
     setActiveTab('history');
@@ -53,20 +54,18 @@ const DapurPortal = () => {
       </header>
 
       <main className="p-4 space-y-5">
-        {/* Tab Navigation */}
-        <div className="flex gap-2 p-1 bg-gray-900 rounded-xl border border-gray-800">
-          <button 
-            onClick={() => setActiveTab('order')}
-            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${activeTab === 'order' ? 'bg-gray-800 text-white' : 'text-gray-400'}`}
-          >
-            Buat PO Baru
-          </button>
-          <button 
-            onClick={() => setActiveTab('history')}
-            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${activeTab === 'history' ? 'bg-gray-800 text-white' : 'text-gray-400'}`}
-          >
-            Status Pesanan
-          </button>
+        {/* Tab Navigation (GooeyNav) */}
+        <div className="flex justify-center mb-6">
+          <GooeyNav 
+            items={[
+              { label: 'Buat PO Baru', href: '#order' },
+              { label: 'Status Pesanan', href: '#history' }
+            ]}
+            initialActiveIndex={activeTab === 'order' ? 0 : 1}
+            onItemClick={(idx) => setActiveTab(idx === 0 ? 'order' : 'history')}
+            animationTime={400}
+            particleCount={12}
+          />
         </div>
 
         {activeTab === 'order' && (
@@ -106,7 +105,7 @@ const DapurPortal = () => {
 
         {activeTab === 'history' && (
           <div className="animate-fade-up space-y-3">
-            {poHistory.map((po, idx) => (
+            {poList.map((po, idx) => (
               <Card key={idx} className="relative overflow-hidden">
                 <div className={`absolute top-0 left-0 w-1 h-full ${po.status === 'approved' ? 'bg-green-500' : 'bg-amber-500'}`} />
                 <CardContent className="p-4">

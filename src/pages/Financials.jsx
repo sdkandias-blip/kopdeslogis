@@ -5,6 +5,7 @@ import ToastContainer from '../components/ToastContainer';
 import { useToast } from '../hooks/useAppHooks';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { treasuryMetrics, memberAccounts } from '../data/mockData';
+import Counter from '../components/ui/Counter';
 
 const Financials = () => {
   const { toasts, showToast } = useToast();
@@ -142,14 +143,36 @@ const Financials = () => {
                             </div>
                           </td>
                           <td className="py-4 px-6">
-                            <span className="text-sm font-bold text-green-400">
-                              Rp {member.savings.toLocaleString('id-ID')}
-                            </span>
+                            <div className="flex items-baseline gap-0.5 text-green-400 font-bold">
+                              <span className="text-xs">Rp</span>
+                              <Counter
+                                value={member.savings}
+                                fontSize={13}
+                                gap={1}
+                                horizontalPadding={0}
+                                textColor="#4ade80"
+                                fontWeight={700}
+                                gradientFrom="transparent"
+                              />
+                            </div>
                           </td>
                           <td className="py-4 px-6">
-                            <span className={`text-sm font-medium ${member.credit > 0 ? 'text-red-400' : 'text-gray-500'}`}>
-                              {member.credit > 0 ? `Rp ${member.credit.toLocaleString('id-ID')}` : '—'}
-                            </span>
+                            {member.credit > 0 ? (
+                              <div className="flex items-baseline gap-0.5 text-red-400 font-medium">
+                                <span className="text-xs">Rp</span>
+                                <Counter
+                                  value={member.credit}
+                                  fontSize={13}
+                                  gap={1}
+                                  horizontalPadding={0}
+                                  textColor="#f87171"
+                                  fontWeight={500}
+                                  gradientFrom="transparent"
+                                />
+                              </div>
+                            ) : (
+                              <span className="text-sm text-gray-500">—</span>
+                            )}
                           </td>
                           <td className="py-4 px-6 text-right">
                             {isCleared ? (

@@ -1,13 +1,10 @@
 import AdminLayout from '../layouts/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-const mockLedger = [
-  { id: 'BLK-00192', timestamp: '16 Mei 2026, 09:12:45', hash: '0x8f3c...9a12', batchId: 'MBG-AYM-8829', status: 'immutable' },
-  { id: 'BLK-00191', timestamp: '16 Mei 2026, 08:30:10', hash: '0x1a4b...7b9c', batchId: 'MBG-BRS-7710', status: 'immutable' },
-  { id: 'BLK-00190', timestamp: '15 Mei 2026, 14:22:05', hash: '0x5c9e...2f8a', batchId: 'MBG-SYR-6651', status: 'immutable' },
-];
+import { useAppContext } from '../context/AppContext';
 
 const AuditLedger = () => {
+  const { ledgerList } = useAppContext();
+  
   return (
     <AdminLayout activePage="audit" title="Audit & Ledger">
       <div className="mb-6 flex justify-between items-center">
@@ -55,7 +52,7 @@ const AuditLedger = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {mockLedger.map((ledger, idx) => (
+                  {ledgerList.map((ledger, idx) => (
                     <tr key={idx} className="border-b border-gray-800/50 hover:bg-white/5 transition-colors">
                       <td className="py-4 px-5">
                         <span className="text-sm font-bold text-white">{ledger.id}</span>

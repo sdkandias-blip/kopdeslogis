@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ConfirmSlider from '../components/ConfirmSlider';
 import ToastContainer from '../components/ToastContainer';
 import { useToast } from '../hooks/useAppHooks';
+import { useAppContext } from '../context/AppContext';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { traceabilityBatches } from '../data/mockData';
 
@@ -11,6 +12,7 @@ const BATCHES = Object.keys(traceabilityBatches);
 const TraceabilityScanner = () => {
   const navigate = useNavigate();
   const { toasts, showToast } = useToast();
+  const { addLedgerEntry, addReturEntry } = useAppContext();
   const [inputCode, setInputCode] = useState('');
   const [scanState, setScanState] = useState('idle');
   const [batchData, setBatchData] = useState(null);
@@ -39,14 +41,21 @@ const TraceabilityScanner = () => {
     setRejectReason('');
   };
 
+  const handleConfirm = () => {
+    addLedgerEntry(batchData.code);
+    setConfirmed(true);
+    showToast({ message: 'Barang diterima. Data dikunci ke Blockchain Ledger!', type: 'success', duration: 4000 });
+  };
+
   const handleRejectSubmit = () => {
     if (!rejectReason) {
       showToast({ message: 'Harap isi alasan retur', type: 'error' });
       return;
     }
+    addReturEntry(batchData.code, rejectReason);
     setRejected(true);
     setShowRejectForm(false);
-    showToast({ message: `Batch ${batchData.code} telah diretur/ditolak!`, type: 'error', duration: 4000 });
+    showToast({ message: 'Penolakan dicatat. Dilaporkan ke Supply Chain.', type: 'error', duration: 4000 });
   };
 
   return (
@@ -238,7 +247,7 @@ const TraceabilityScanner = () => {
                 </div>
               ) : (
                 <>
-                  <ConfirmSlider onConfirm={() => { setConfirmed(true); showToast({ message: `Batch ${batchData.code} dikunci ke buku besar!`, type: 'success', duration: 4000 }); }} label="Geser untuk Konfirmasi Penerimaan" />
+                  <ConfirmSlider onConfirm={handleConfirm} label="Geser untuk Konfirmasi Penerimaan" />
                   
                   <div className="flex justify-between items-center mt-3">
                     <p className="text-[11px] font-medium text-gray-500 tracking-wide">🔒 KONFIRMASI PENERIMAAN KOMODITAS</p>

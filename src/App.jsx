@@ -5,14 +5,18 @@ import SupplyChain from './pages/SupplyChain';
 import Operations from './pages/Operations';
 import TraceabilityScanner from './pages/TraceabilityScanner';
 import Financials from './pages/Financials';
+import { AppProvider } from './context/AppContext';
 import DapurPortal from './pages/DapurPortal';
 import AuditLedger from './pages/AuditLedger';
+import Login from './pages/Login';
 
 function App() {
   return (
-    <Router>
+    <AppProvider>
+      <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/admin" replace />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/prosumer" element={<ProsumerPortal />} />
         <Route path="/supply-chain" element={<SupplyChain />} />
@@ -23,6 +27,7 @@ function App() {
         <Route path="/audit" element={<AuditLedger />} />
       </Routes>
     </Router>
+    </AppProvider>
   );
 }
 

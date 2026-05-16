@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../layouts/AdminLayout';
 import ToastContainer from '../components/ToastContainer';
 import { useToast } from '../hooks/useAppHooks';
+import { useAppContext } from '../context/AppContext';
 import { fleetData } from '../data/mockData';
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -132,29 +133,24 @@ const FleetMap = ({ fleet, selected, onSelect }) => {
 const SupplyChain = () => {
   const navigate = useNavigate();
   const { toasts, showToast } = useToast();
+  const { poList, approvePO, revisePO, returList, claimRetur } = useAppContext();
+  
   const [selectedTruck, setSelectedTruck] = useState(fleetData[0]);
   const [activeTab, setActiveTab] = useState('tracker');
 
-  const [dapurPOs, setDapurPOs] = useState([
-    { id: 'PO-DPR-01', dapur: 'Dapur Umum Rungkut', items: '2 Ton Beras, 500 Kg Ayam', date: 'Besok, 06:00', status: 'pending' },
-    { id: 'PO-DPR-02', dapur: 'Dapur Umum Sukolilo', items: '1.5 Ton Beras, 300 Kg Ayam', date: 'Besok, 06:30', status: 'pending' }
-  ]);
-
-  const [returQueue, setReturQueue] = useState([
-    { id: 'RET-001', batchId: 'MBG-AYM-8829', dapur: 'Dapur Umum Gubeng', reason: 'Suhu drop di atas ambang batas', status: 'pending', amount: 'Rp 2.500.000' }
-  ]);
+  const pendingPOs = poList.filter(po => po.status === 'pending');
 
   const handleContact = (truck) => {
     showToast({ message: `Menghubungi pengemudi armada ${truck.id}...`, type: 'info' });
   };
 
   const handleRevisiPO = (id) => {
-    setDapurPOs(prev => prev.filter(po => po.id !== id));
+    revisePO(id);
     showToast({ message: `PO ${id} dikembalikan ke Dapur Umum untuk direvisi.`, type: 'info' });
   };
 
   const handleApprovePO = (id) => {
-    setDapurPOs(prev => prev.filter(po => po.id !== id));
+    approvePO(id);
     showToast({ message: `PO ${id} disetujui dan disinkronkan ke AI Forecasting.`, type: 'success' });
   };
 
@@ -163,7 +159,7 @@ const SupplyChain = () => {
   };
 
   const handleClaimRetur = (id) => {
-    setReturQueue(prev => prev.filter(r => r.id !== id));
+    claimRetur(id);
     showToast({ message: `Klaim asuransi untuk Retur ${id} sedang diproses. Dana akan disesuaikan di Financials.`, type: 'info' });
   };
 
@@ -196,9 +192,9 @@ const SupplyChain = () => {
             className={`px-4 py-2 font-bold text-sm rounded-t-lg transition-colors flex items-center gap-2 ${activeTab === 'po' ? 'text-white border-b-2 border-green-500 bg-white/5' : 'text-gray-400 hover:text-gray-200'}`}
           >
             Purchase Order Dapur
-            {dapurPOs.length > 0 && (
+            {pendingPOs.length > 0 && (
               <span className="px-1.5 py-0.5 rounded-full bg-blue-500 text-[10px] text-white">
-                {dapurPOs.length}
+                {pendingPOs.length}
               </span>
             )}
           </button>
@@ -207,9 +203,9 @@ const SupplyChain = () => {
             className={`px-4 py-2 font-bold text-sm rounded-t-lg transition-colors flex items-center gap-2 ${activeTab === 'retur' ? 'text-white border-b-2 border-red-500 bg-white/5' : 'text-gray-400 hover:text-gray-200'}`}
           >
             Retur & Kendala
-            {returQueue.length > 0 && (
+            {returList.length > 0 && (
               <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-[10px] text-white animate-pulse">
-                {returQueue.length}
+                {returList.length}
               </span>
             )}
           </button>
@@ -353,7 +349,7 @@ const SupplyChain = () => {
               <p className="text-sm text-gray-400">Verifikasi permintaan pasokan dari Dapur Umum sebelum disinkronkan ke AI Forecasting.</p>
             </div>
             
-            {dapurPOs.length === 0 ? (
+            {pendingPOs.length === 0 ? (
               <Card className="flex flex-col items-center justify-center text-gray-500">
                 <CardContent className="p-10 flex flex-col items-center">
                   <span className="material-symbols-outlined text-5xl mb-3">check_circle</span>
@@ -363,7 +359,7 @@ const SupplyChain = () => {
               </Card>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {dapurPOs.map(po => (
+                {pendingPOs.map(po => (
                   <Card key={po.id} className="relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-1 h-full bg-blue-500 z-10" />
                     <CardContent className="p-6">
@@ -407,7 +403,7 @@ const SupplyChain = () => {
               </div>
             </div>
             
-            {returQueue.length === 0 ? (
+            {returList.length === 0 ? (
               <Card className="flex flex-col items-center justify-center text-gray-500">
                 <CardContent className="p-10 flex flex-col items-center">
                   <span className="material-symbols-outlined text-5xl mb-3">shield</span>
@@ -417,7 +413,7 @@ const SupplyChain = () => {
               </Card>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {returQueue.map(retur => (
+                {returList.map(retur => (
                   <Card key={retur.id} className="relative overflow-hidden border-red-500/20 shadow-[0_0_15px_rgba(248,81,73,0.05)]">
                     <div className="absolute top-0 left-0 w-1 h-full bg-red-500 z-10" />
                     <CardContent className="p-6">

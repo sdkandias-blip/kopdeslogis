@@ -7,65 +7,61 @@ const AdminHeader = ({ title }) => {
     <>
       {/* Desktop Header */}
       <header
-        className="hidden md:flex justify-between items-center px-6 sticky top-0 z-40"
+        className="hidden md:flex justify-between items-center px-7 sticky top-0 z-40"
         style={{
           height: 'var(--header-h, 64px)',
-          background: 'rgba(13,17,23,0.8)',
-          backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          background: 'rgba(8,10,14,0.85)',
+          backdropFilter: 'blur(24px)',
+          borderBottom: '1px solid rgba(255,255,255,0.04)',
         }}
       >
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2">
-          <span style={{ fontSize: 13, color: 'var(--muted)' }}>KopdesLogis</span>
-          <span className="material-symbols-outlined" style={{ fontSize: 16, color: 'var(--muted)' }}>chevron_right</span>
-          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>{title}</span>
-        </div>
+        {/* Title */}
+        <h2 className="text-[15px] font-semibold text-white">{title}</h2>
 
         {/* Actions */}
         <div className="flex items-center gap-2">
           {/* Live badge */}
           <div
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
-            style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.15)' }}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-md"
+            style={{ background: 'rgba(34,197,94,0.07)', border: '1px solid rgba(34,197,94,0.12)' }}
           >
             <span
-              className="animate-pulse-dot inline-block w-2 h-2 rounded-full"
+              className="animate-pulse-dot inline-block w-1.5 h-1.5 rounded-full"
               style={{ background: 'var(--green-500)' }}
             />
-            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--green-500)' }}>LIVE</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--green-500)', letterSpacing: '0.05em' }}>LIVE</span>
           </div>
 
           {/* Notifications */}
           <div className="relative">
             <button
               className="btn-ghost relative"
-              style={{ padding: '8px', borderRadius: '8px' }}
+              style={{ padding: '7px', borderRadius: '8px' }}
               onClick={() => setNotifOpen(o => !o)}
               aria-label="Notifications"
             >
-              <span className="material-symbols-outlined" style={{ fontSize: 20 }}>notifications</span>
+              <span className="material-symbols-outlined" style={{ fontSize: 19 }}>notifications</span>
               <span
-                className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full"
-                style={{ background: 'var(--error)', border: '1.5px solid var(--bg)' }}
+                className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full"
+                style={{ background: 'var(--error)' }}
               />
             </button>
             {notifOpen && (
               <div
                 className="absolute right-0 top-12 w-72 rounded-xl py-2 z-50 animate-fade-up"
-                style={{ background: 'var(--surface2)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 40px rgba(0,0,0,0.5)' }}
+                style={{ background: '#111318', border: '1px solid rgba(255,255,255,0.07)', boxShadow: '0 20px 50px rgba(0,0,0,0.7)' }}
               >
-                <p className="px-4 py-2 text-xs font-bold" style={{ color: 'var(--muted)' }}>NOTIFIKASI</p>
+                <p className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--muted)' }}>Notifikasi</p>
                 {[
                   { icon: 'warning', color: 'var(--warning)', text: 'Suhu Unit Cold Chain melebihi threshold' },
                   { icon: 'inventory_2', color: 'var(--info)', text: 'Stok Beras mendekati reorder point' },
                   { icon: 'task_alt', color: 'var(--success)', text: '3 kontrak baru siap dieksekusi' },
                 ].map((n, i) => (
                   <button key={i} className="w-full flex items-start gap-3 px-4 py-3 text-left text-sm transition-colors" style={{ color: 'var(--text)' }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                     onMouseLeave={e => e.currentTarget.style.background = ''}
                   >
-                    <span className="material-symbols-outlined mt-0.5" style={{ fontSize: 18, color: n.color, flexShrink: 0 }}>{n.icon}</span>
+                    <span className="material-symbols-outlined mt-0.5" style={{ fontSize: 17, color: n.color, flexShrink: 0 }}>{n.icon}</span>
                     <span style={{ fontSize: 13 }}>{n.text}</span>
                   </button>
                 ))}
@@ -73,10 +69,10 @@ const AdminHeader = ({ title }) => {
             )}
           </div>
 
-          {/* PDF Export */}
-          <button className="btn-primary">
-            <span className="material-symbols-outlined" style={{ fontSize: 16 }}>picture_as_pdf</span>
-            Export PDF
+          {/* Export */}
+          <button className="btn-primary text-xs py-2 px-3">
+            <span className="material-symbols-outlined" style={{ fontSize: 15 }}>picture_as_pdf</span>
+            Export
           </button>
         </div>
       </header>

@@ -1,118 +1,120 @@
-import { Link } from 'react-router-dom';
-import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
+import { Link, useNavigate } from 'react-router-dom';
 
-const NAV_ITEMS = [
-  { to: '/admin',        page: 'home',        icon: 'dashboard',       label: 'Dashboard'   },
-  { to: '/operations',   page: 'operations',  icon: 'conveyor_belt',   label: 'Operations'  },
-  { to: '/supply-chain', page: 'supply',      icon: 'inventory_2',     label: 'Supply Chain' },
-  { to: '/financials',   page: 'financials',  icon: 'payments',        label: 'Financials'  },
-  { to: '/audit',        page: 'audit',       icon: 'receipt_long',    label: 'Audit Ledger' },
-  { to: '/scanner',      page: 'scanner',     icon: 'qr_code_scanner', label: 'Scanner'     },
-  { to: '/prosumer',     page: 'prosumer',    icon: 'groups',          label: 'Prosumer'    },
-  { to: '/dapur',        page: 'dapur',       icon: 'restaurant',      label: 'Dapur Umum'  },
+const NAV_GROUPS = [
+  {
+    label: 'Overview',
+    items: [
+      { to: '/admin',        page: 'home',        icon: 'dashboard',       label: 'Dashboard'   },
+    ]
+  },
+  {
+    label: 'Operations',
+    items: [
+      { to: '/operations',   page: 'operations',  icon: 'conveyor_belt',   label: 'Operations'  },
+      { to: '/supply-chain', page: 'supply',      icon: 'local_shipping',  label: 'Supply Chain' },
+      { to: '/scanner',      page: 'scanner',     icon: 'qr_code_scanner', label: 'Scanner'     },
+    ]
+  },
+  {
+    label: 'Finance & Audit',
+    items: [
+      { to: '/financials',   page: 'financials',  icon: 'payments',        label: 'Financials'  },
+      { to: '/audit',        page: 'audit',       icon: 'receipt_long',    label: 'Audit Ledger' },
+    ]
+  },
+  {
+    label: 'Stakeholders',
+    items: [
+      { to: '/prosumer',     page: 'prosumer',    icon: 'groups',          label: 'Prosumer'    },
+      { to: '/dapur',        page: 'dapur',       icon: 'restaurant',      label: 'Dapur Umum'  },
+    ]
+  },
 ];
 
-const AdminSidebar = ({ activePage }) => (
-  <div className="hidden md:flex h-screen fixed left-0 top-0 z-50">
-    <Sidebar
-      width="260px"
-      backgroundColor="transparent"
-      rootStyles={{
-        background: 'linear-gradient(180deg, #0d1117 0%, #111827 100%)',
-        borderRight: '1px solid rgba(255,255,255,0.06)',
-        height: '100%',
-        color: '#fff',
-      }}
-    >
-      <div className="flex flex-col h-full">
-        {/* Logo */}
-        <div className="px-6 py-6 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-          <div className="flex items-center gap-3">
-            <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #16a34a, #065f46)' }}
-            >
-              <span className="material-symbols-outlined text-white" style={{ fontSize: 18 }}>eco</span>
-            </div>
-            <div>
-              <h1 className="font-display text-[15px] font-extrabold text-white tracking-tight">KopdesLogis</h1>
-              <p style={{ fontSize: 11, color: 'var(--muted)', marginTop: 1 }}>Admin Dashboard</p>
-            </div>
-          </div>
-        </div>
+const AdminSidebar = ({ activePage }) => {
+  const navigate = useNavigate();
 
-        {/* Nav items */}
-        <div className="flex-grow py-4 px-3 overflow-y-auto">
-          <Menu
-            menuItemStyles={{
-              button: ({ level, active }) => ({
-                backgroundColor: active ? 'rgba(34, 197, 94, 0.1)' : 'transparent',
-                color: active ? '#22c55e' : 'var(--muted)',
-                borderRadius: '8px',
-                marginBottom: '4px',
-                padding: '10px 12px',
-                height: 'auto',
-                '&:hover': {
-                  backgroundColor: 'rgba(255,255,255,0.05)',
-                  color: '#fff',
-                },
-              }),
-              icon: ({ active }) => ({
-                color: active ? '#22c55e' : 'inherit',
-              })
-            }}
-          >
-            {NAV_ITEMS.map(({ to, page, icon, label }) => {
-              const isActive = page === activePage;
-              return (
-                <MenuItem
-                  key={page}
-                  active={isActive}
-                  component={<Link to={to} />}
-                  icon={
-                    <span
-                      className="material-symbols-outlined"
+  return (
+    <aside className="hidden md:flex flex-col h-screen fixed left-0 top-0 z-50 w-[240px]"
+      style={{ background: '#0a0c10', borderRight: '1px solid rgba(255,255,255,0.05)' }}>
+
+      {/* Logo */}
+      <div className="flex items-center gap-3 px-5 h-16 border-b flex-shrink-0"
+        style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+          style={{ background: 'linear-gradient(135deg, #16a34a, #0d9488)' }}>
+          <span className="material-symbols-outlined text-white" style={{ fontSize: 16, fontVariationSettings: "'FILL' 1" }}>hub</span>
+        </div>
+        <div>
+          <p className="text-[14px] font-bold text-white tracking-tight leading-none">KopdesLogis</p>
+          <p className="text-[10px] mt-0.5" style={{ color: 'var(--muted)' }}>Admin Panel</p>
+        </div>
+      </div>
+
+      {/* Nav */}
+      <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-5">
+        {NAV_GROUPS.map(group => (
+          <div key={group.label}>
+            <p className="px-3 mb-1.5 text-[10px] font-bold uppercase tracking-widest"
+              style={{ color: 'rgba(125,133,144,0.6)' }}>
+              {group.label}
+            </p>
+            <ul className="space-y-0.5">
+              {group.items.map(({ to, page, icon, label }) => {
+                const isActive = page === activePage;
+                return (
+                  <li key={page}>
+                    <Link
+                      to={to}
+                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-150 group"
                       style={{
-                        fontSize: 20,
-                        fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0",
+                        backgroundColor: isActive ? 'rgba(34,197,94,0.1)' : 'transparent',
+                        color: isActive ? '#22c55e' : 'var(--muted)',
+                        fontWeight: isActive ? 600 : 500,
                       }}
+                      onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = '#e6edf3'; } }}
+                      onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted)'; } }}
                     >
-                      {icon}
-                    </span>
-                  }
-                >
-                  <span className="text-sm font-medium">{label}</span>
-                </MenuItem>
-              );
-            })}
-          </Menu>
-        </div>
+                      <span className="material-symbols-outlined flex-shrink-0"
+                        style={{ fontSize: 18, fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}>
+                        {icon}
+                      </span>
+                      {label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </nav>
 
-        {/* Footer */}
-        <div className="px-3 py-4 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-          <button className="btn-ghost w-full justify-center mb-3">
-            <span className="material-symbols-outlined" style={{ fontSize: 16 }}>settings</span>
-            Settings
-          </button>
-          <div
-            className="flex items-center gap-3 px-3 py-2 rounded-lg"
-            style={{ background: 'rgba(255,255,255,0.03)' }}
-          >
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg,#16a34a,#0d9488)', color: '#fff' }}
-            >
-              AU
-            </div>
-            <div className="min-w-0">
-              <p className="text-[13px] font-semibold text-white truncate">Admin User</p>
-              <p style={{ fontSize: 11, color: 'var(--muted)' }}>Koperasi Desa</p>
-            </div>
+      {/* Footer */}
+      <div className="px-3 py-4 border-t flex-shrink-0" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+        <button
+          onClick={() => navigate('/login')}
+          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all text-sm"
+          style={{ color: 'var(--muted)' }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(248,81,73,0.08)'; e.currentTarget.style.color = '#f85149'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted)'; }}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>logout</span>
+          <span className="font-medium">Keluar</span>
+        </button>
+        <div className="flex items-center gap-3 px-3 py-2 mt-2 rounded-lg"
+          style={{ background: 'rgba(255,255,255,0.03)' }}>
+          <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg,#16a34a,#0d9488)', color: '#fff' }}>
+            AU
+          </div>
+          <div className="min-w-0">
+            <p className="text-[12px] font-semibold text-white truncate">Admin User</p>
+            <p style={{ fontSize: 10, color: 'var(--muted)' }}>Koperasi Desa</p>
           </div>
         </div>
       </div>
-    </Sidebar>
-  </div>
-);
+    </aside>
+  );
+};
 
 export default AdminSidebar;
